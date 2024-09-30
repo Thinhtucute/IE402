@@ -1,0 +1,146 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>ArcGIS Map SDK for JavaScript Tutorials: Display a map</title>
+
+    <style>
+        html,
+        body,
+        #viewDiv {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css">
+    <script src="https://js.arcgis.com/4.29"></script>
+
+    <script>
+        var jsondata = {
+            "points": [
+                {
+                    type: "point",
+                    longitude: 106.6644,
+                    latitude: 10.7851,
+                    name: "Công Viên Lê Thị Riêng",
+                    location: "giữa ba con đường Cách Mạng Tháng 8, Bắc Hải và Trường Sơn",
+                    symbol: {
+                        type: "picture-marker",
+                        url: "https://statics.vinpearl.com/cong-vien-le-thi-rieng-1_1633937622.jpg",
+                        width: "60px",
+                        height: "45px",
+                        outline: {
+                            color: [123, 123, 123],
+                            width: 10,
+                        }
+                    },
+                    popupTemplate: {
+                        title: "{name}",
+                        content: "Nằm ở {location}.",
+                    }
+                }
+            ],
+            "lines": [
+                {
+                    type: "polyline",
+                    paths: [
+                        [106.6615544238, 10.7583198062],
+                        [106.656129922, 10.7779493447],
+                        [106.6645413308, 10.7869542194],
+                        [106.6816388049, 10.7778818899],
+                        [106.6829777616, 10.7760606461],
+                        [106.6743946927, 10.7676962735],
+                        [106.6815358071, 10.7654365011],
+                        [106.6750470065, 10.7611530137],
+                        [106.6615544238, 10.7583198062]
+                    ],
+                    symbol: {
+                        type: "simple-line",
+                        color: [226, 119, 40],
+                        width: 2
+                    },
+                    name: "Quận 10",
+                    location: "Thành phố Hồ Chí Minh",
+                    popupTemplate: {
+                        title: "{name}",
+                        content: "Địa chỉ: <b>{location}</b>."
+                    }
+                }
+            ],
+            "polygons": [ // Sửa từ "polygon" thành "polygons:"
+                {
+                    type: "polygon",
+                    rings: [
+                        [106.6661924276, 10.7726872605],
+                        [106.6659928711, 10.7731921145],
+                        [106.6662954244, 10.7733059436],
+                        [106.6665003451, 10.77279582],
+                        [106.6661924276, 10.7726872605]
+                    ],
+                    name: "Đại học Y Khoa Phạm Ngọc Thạch",
+                    location: "Phường 12, quận 10, Thành phố Hồ Chí Minh",
+                    symbol: {
+                        type: "simple-fill",
+                        outline: {
+                            color: [192, 192, 192],
+                            width: 1
+                        }
+                    },
+                    popupTemplate: {
+                        title: "{name}",
+                        content: "Địa chỉ: <b>{location}</b>."
+                    }
+                }
+            ]
+        };
+
+        require([
+            "esri/Map",
+            "esri/views/MapView",
+            "esri/Graphic",
+            "esri/layers/GraphicsLayer"
+        ], function (Map, MapView, Graphic, GraphicsLayer) {
+            var map = new Map({
+                basemap: "topo-vector"
+            });
+            map.on("load", function () {
+                map.graphics.enableMouseEvents();
+            });
+            var view = new MapView({
+                container: "viewDiv",
+                map: map,
+                center: [106.6683663055,10.7727322144],
+                zoom: 15,
+                highlightOptions: {
+                    color: "blue"
+                }
+            });
+            var createGraphic = function (data) {
+                return new Graphic({
+                    geometry: data,
+                    symbol: data.symbol,
+                    attributes: data,
+                    popupTemplate: data.popupTemplate
+                });
+            };
+            var graphicsLayer = new GraphicsLayer();
+            jsondata.points.forEach(function (data) {
+                graphicsLayer.add(createGraphic(data));
+            });
+            jsondata.lines.forEach(function (data) {
+                graphicsLayer.add(createGraphic(data));
+            });
+            jsondata.polygons.forEach(function (data) {
+                graphicsLayer.add(createGraphic(data));
+            });
+            map.add(graphicsLayer);
+        });
+    </script>
+</head>
+<body>
+    <div id="viewDiv"></div>
+</body>
+</html>
