@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>Sketch in 3D | Sample | ArcGIS Maps SDK for JavaScript 4.29</title>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css" />
+    <script src="https://js.arcgis.com/4.29/"></script>
+    <style>
+        html, body, #viewDiv {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+            background-color: ghostwhite;
+        }
+    </style>
+    <script>
+        require([
+            "esri/Map",
+            "esri/views/SceneView",
+            "esri/layers/GeoJSONLayer"
+        ], function (Map, SceneView, GeoJSONLayer) {
+            
+            /**********************************************
+             * Load GeoJSON Layer
+             *********************************************/
+            const geojsonLayer = new GeoJSONLayer({
+                url: "./data.geojson"
+            });
+
+            // Define the renderer for the GeoJSON layer
+            const renderer = {
+                type: "unique-value",
+                field: "layer",
+                uniqueValueInfos: [
+                    {
+                        value: "Building",
+                        symbol: {
+                            type: "polygon-3d",
+                            symbolLayers: [
+                                {
+                                    type: "extrude",
+                                    size: 78,
+                                    material: {
+                                        color: [100,163,180]
+                                    },
+                                    edges: {
+                                        type: "solid",
+                                        color: [212, 235, 255, 1],
+                                        size: 1
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        value: "Widescreen",
+                        symbol: {
+                            type: "simple-fill",
+                            color: [0, 0, 0, 0.6],
+                            outline: {
+                                color: [255, 255, 255],
+                                width: 3
+                            }
+                        }
+                    },
+                    {
+                        value: "Airhole",
+                        symbol: {
+                            type: "simple-fill",
+                            color: [0, 0, 0, 0.6],
+                            outline: {
+                                color: [255, 255, 255],
+                                width: 5
+                            }
+                        }
+                    },
+                    {
+                        value: "Parking",
+                        symbol: {
+                            type: "simple-fill",
+                            color: [0, 0, 0],
+                            outline: {
+                                color: [255, 255, 255],
+                                width: 3
+                            }
+                        }
+                    },
+                    {
+                        value: "WindowOutline",
+                        symbol: {
+                            type: "simple-fill",
+                            color: [0, 0, 0, 0.4],
+                            outline: {
+                                color: [11,122,156],
+                                width: 5
+                            }
+                        }
+                    },
+                    {
+                        value: "WindowFrame",
+                        symbol: {
+                            type: "simple-fill",
+                            color: [0, 0, 0, 0],
+                            outline: {
+                                color: [255,255,255],
+                                width: 4
+                            }
+                        }
+                    }
+                ]
+            };
+
+            geojsonLayer.renderer = renderer;
+
+            const map = new Map({
+                basemap: "topo-vector",
+                ground: "world-elevation",
+                layers: [geojsonLayer] // Add GeoJSON layer to the map
+            });
+
+            const view = new SceneView({
+                container: "viewDiv",
+                map: map,
+                camera: {
+                    position: [106.8036212213, 10.8698273046, 100],
+                    heading: 0,
+                    tilt: 75
+                }
+            });
+            
+
+        });
+    </script>
+</head>
+<body>
+    <div id="viewDiv"></div>
+</body>
+</html>
